@@ -9,7 +9,10 @@
 import json
 from watson_developer_cloud import ToneAnalyzerV3
 
-news = open('articles.json', 'r')
+newsJSON = open('mocksJSON/articles.json', 'r')
+news = json.load(newsJSON)
+
+#print(news)
 
 tone_analyzer = ToneAnalyzerV3(
    username='f74339b8-848d-4622-9e43-2fe02e958b0c',
@@ -32,47 +35,52 @@ class Article(object):
 
 def classifyArticle(news):
     article = Article()
-    article.url = news.url
-    article.title = news.title
-    article.date = news.dateCreated
+    article.url = news['url']
+    article.title = news['title']
+    article.date = news['dateCreated']
 
-    analyzed = tone_analyzer.tone(news.body)
-    article.anger = analyzed.document_toned.tone_categories[0].tones[0].score
-    article.disgust = analyzed.document_toned.tone_categories[0].tones[1].score
-    article.fear = analyzed.document_toned.tone_categories[0].tones[2].score
-    article.joy = analyzed.document_toned.tone_categories[0].tones[3].score
-    article.sadness = analyzed.document_toned.tone_categories[0].tones[4].score
-    article.emotional_range = analyzed.document_toned.tone_categories[2].tones[0].score
-    article.emotional_range = analyzed.document_toned.tone_categories[2].tones[4].score
+    analyzed = tone_analyzer.tone(news['body'])
+
+    #print(analyzed)
+
+    article.anger = analyzed['document_tone']['tone_categories'][0]['tones'][0]['score']
+    article.disgust = analyzed['document_tone']['tone_categories'][0]['tones'][1]['score']
+    article.fear = analyzed['document_tone']['tone_categories'][0]['tones'][2]['score']
+    article.joy = analyzed['document_tone']['tone_categories'][0]['tones'][3]['score']
+    article.sadness = analyzed['document_tone']['tone_categories'][0]['tones'][4]['score']
+    article.emotional_range = analyzed['document_tone']['tone_categories'][2]['tones'][0]['score']
+    article.emotional_range = analyzed['document_tone']['tone_categories'][2]['tones'][4]['score']
 
     onEdge = 0  # Find most emotional sentence - stores highest emotional_range value
     # Checks the emotional range
-    for sentence in analyzed.sentences_tone:
-        sentenceEmotional = sentence.tone_categories[2].tones[4].score
+    for sentence in analyzed['sentences_tone']:
+        sentenceEmotional = sentence['tone_categories'][2]['tones'][4]['score']
         if sentenceEmotional > onEdge:
             onEdge = sentenceEmotional
-            article.emotional_sentence = sentence.text
+            article.emotional_sentence = "..." + sentence['text']
+
+
 
     highestEmo = max(article.anger, article.fear, article.disgust, article.joy, article.sadness)
     if(highestEmo == article.anger):
-        dominant_emotion = "anger"
+        article.dominant_emotion = "anger"
     if(highestEmo == article.fear):
-        dominant_emotion = "fear"
+        article.dominant_emotion = "fear"
     if(highestEmo == article.disgust):
-        dominant_emotion = "disgust"
+        article.dominant_emotion = "disgust"
     if(highestEmo == article.joy):
-        dominant_emotion = "joy"
+        article.dominant_emotion = "joy"
     if(highestEmo == article.sadness):
-        dominant_emotion = "sadness"
+        article.dominant_emotion = "sadness"
 
     return article
 
 analyzed_articles = list()
 
-for newsArticle in news:
+for newsArticle in news['article']:
     analyzed_articles.append(classifyArticle(newsArticle))
 
-with open('analyzed_articles.json', 'w') as outfile:
+with open('mocksJSON/analyzed_articles.json', 'w') as outfile:
     json.dump(analyzed_articles, outfile, default=lambda o: o.__dict__, indent=2)
 
 # For example output, print this
