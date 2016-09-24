@@ -5,7 +5,7 @@ var NewsMood = require("./models/NewsArticle");
 
 //connect to MongoDB 
 // Insert Super Secret Connection String here
-mongoose.connect();
+mongoose.connect("mongodb://newsmood:hLQp9PBtdRnJGmKI9FegaJJPLI9T3Yl8vGHrwcXzYLt41dUXYZTzsoA27NrH001CxZbgA0Aqjbio4liIVxKkIA==@newsmood.documents.azure.com:10250/?ssl=true");
 
 var app = express();
 // configure app to use bodyParser()
@@ -20,7 +20,6 @@ app.get('/', function(req,res){
 });
 
 app.post('/insertNewsArticle', function(req, res){
-    
     var newArticle = new NewsMood({
         name: "ABS",
         source: "Some",
@@ -41,11 +40,6 @@ app.get('/newsMoods', function(req, res){
         else res.json(users);
     });
 });
-
-
-
-
-
 
 app.listen(3000, function(){
     console.log('Server ON');

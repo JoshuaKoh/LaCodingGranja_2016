@@ -1,0 +1,4 @@
+- Scrapy 1.1
+- Pymongo 3.4
+- npm->mongoose
+- npm->express
