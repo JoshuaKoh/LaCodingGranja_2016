@@ -2,5 +2,5 @@
 Get HTML code. Pull text for each story.
 2. Clean the data.
 Clean all the formatting out of the text.
-3. Push data through Watson.
+3. Push data through Watson. @Joshua
 4. Sort stories by positive or negative/mood.
