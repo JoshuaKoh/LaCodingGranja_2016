@@ -1,7 +1,15 @@
+# Input: JSON object with articles extracted
+# Output: JSON object with analyzed articles
+# Structure of output JSON file:
+#   Basic Info: URL, title, date created
+#   Emotions: anger, disgust, fear, joy, sadness
+#   Social Tone: openness, emotional range
+#   Extras: most emotional sentence
+
 import json
 from watson_developer_cloud import ToneAnalyzerV3
 
-news = open('andrewsJSON.json', 'r')
+news = open('articles.json', 'r')
 
 tone_analyzer = ToneAnalyzerV3(
    username='f74339b8-848d-4622-9e43-2fe02e958b0c',
@@ -27,12 +35,13 @@ def classifyArticle(news):
     article.title = news.title
     article.date = news.dateCreated
 
-    analyzed = tone_analyzer.tone(news.text)
+    analyzed = tone_analyzer.tone(news.body)
     article.anger = analyzed.document_toned.tone_categories[0].tones[0].score
     article.disgust = analyzed.document_toned.tone_categories[0].tones[1].score
     article.fear = analyzed.document_toned.tone_categories[0].tones[2].score
     article.joy = analyzed.document_toned.tone_categories[0].tones[3].score
     article.sadness = analyzed.document_toned.tone_categories[0].tones[4].score
+    article.emotional_range = analyzed.document_toned.tone_categories[2].tones[0].score
     article.emotional_range = analyzed.document_toned.tone_categories[2].tones[4].score
 
     onEdge = 0  # Find most emotional sentence - stores highest emotional_range value
