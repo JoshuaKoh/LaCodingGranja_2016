@@ -2,18 +2,20 @@ from dbco import *
 import plotly.plotly as py
 import plotly.graph_objs as go
 
-daysX = [31]
-emotionsY = [31]
+daysX = []
+emotionsY = []
 
 dayFreq = [31]
 size = []
+
+_cache = {}
 
 for article in stocks.find({"emotions": {$gt: 0.25}}).sort([
         ("emotions", pymongo.DESCENDING):
     daysX.append(article["date"])
     # Format article date to get day number
 
-    # Add day number to days.
+    # Add day number to days, but don't if day + emotion combo is already in cache. Otherwise, cache day emotion combo.
 
     # Count day number in dayFreq.
 
