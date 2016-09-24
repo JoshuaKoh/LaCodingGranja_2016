@@ -4,7 +4,7 @@
 #   Basic Info: URL, title, date created
 #   Emotions: anger, disgust, fear, joy, sadness
 #   Social Tone: openness, emotional range
-#   Extras: most emotional sentence
+#   Extras: most emotional sentence, dominant emotion
 
 import json
 from watson_developer_cloud import ToneAnalyzerV3
@@ -21,6 +21,7 @@ class Article(object):
     title = "",
     date = "",
     emotional_sentence = "",
+    dominant_emotion = "",
     anger = 0,
     disgust = 0,
     fear = 0,
@@ -51,6 +52,19 @@ def classifyArticle(news):
         if sentenceEmotional > onEdge:
             onEdge = sentenceEmotional
             article.emotional_sentence = sentence.text
+
+    highestEmo = max(article.anger, article.fear, article.disgust, article.joy, article.sadness)
+    if(highestEmo == article.anger):
+        dominant_emotion = "anger"
+    if(highestEmo == article.fear):
+        dominant_emotion = "fear"
+    if(highestEmo == article.disgust):
+        dominant_emotion = "disgust"
+    if(highestEmo == article.joy):
+        dominant_emotion = "joy"
+    if(highestEmo == article.sadness):
+        dominant_emotion = "sadness"
+
     return article
 
 analyzed_articles = list()
