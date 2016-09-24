@@ -14,7 +14,8 @@ for article in stocks.find({"emotions": {$gt: 0.25}}).sort([
         ("emotions", pymongo.DESCENDING):
     daysX.append(article["date"])
     # Format article date to get day number
-
+    # Sep 24, 2015
+    
     # Add day number to days, but don't if day + emotion combo is already in cache. Otherwise, cache day emotion combo.
 
     # Count day number in dayFreq.

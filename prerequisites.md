@@ -1,4 +1,5 @@
-- Scrapy 1.1
 - Pymongo 3.4
+- bs4
 - npm->mongoose
 - npm->express
+- npm->body-parser

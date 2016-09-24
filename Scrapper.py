@@ -1,18 +1,20 @@
 import requests
 from bs4 import BeautifulSoup
-
+from dbco import *
+from datetime import datetime
 
 class Story:
     'Common base class for all Stories'
     storyCount = 0
 
-    def __init__(self, url, title, date, author, body, nextUrl):
+    def __init__(self, url, title, date, author, body, nextUrl, dateFetched):
         self.url = url
         self.title = title
         self.date = date
         self.author = author
         self.body = body
         self.nextUrl = nextUrl
+        self.dateFetched = dateFetched
 
         Story.storyCount += 1
 
@@ -33,6 +35,7 @@ def makeStory(url):
     body = elements[3].get_text().strip()
     links = elements[4].findAll(href=True)
     nextUrl = ""
+    dateFetched = datetime.now()
     for link in links:
         if(link.get_text().strip() == "Next"):
             nextUrl = "http://www.foxnews.mobi/" + link['href'] + "&pageNum=-1"
@@ -40,7 +43,7 @@ def makeStory(url):
     if nextUrl is "":
         return
 
-    out = Story(url, title, date, author, body, nextUrl)
+    out = Story(url, title, date, author, body, nextUrl, dateFetched)
 
     return out
 
@@ -52,27 +55,43 @@ def getNextStory(story):
     return out
 
 
+bulk = articles.initialize_unordered_bulk_op()
+
 # input("Please enter a URL")
 site = "http://www.foxnews.mobi/quickPage.html?page=38321&content=118383004&pageNum=-1"
 # print(site)
 myStory = makeStory(site)
 
-print("\nThe Story URL:\n" + myStory.url)
-print("\nThe Story title:\n" + myStory.title)
-print("\nThe Story date:\n" + myStory.date)
-print("\nThe Story author:\n" + myStory.author)
-print("\nThe Story body:\n" + myStory.body)
-print("\nThe Story nextUrl:\n" + myStory.nextUrl)
+storyDoc = {
+        "url": myStory.url
+        "title": myStory.title,
+        "author": myStory.author
+        "date": myStory.date
+        "body": myStory.body
+        "links": myStory.links
+        "nextUrl": myStory.nextUrl
+        "dateFetched": myStory.dateFetched}
+bulk.insert(storyDoc)
 
 contStory = myStory
+
 for i in range(1000000):
 
     contStory = getNextStory(contStory)
-    # print("\nThe Story URL:\n" + contStory.url)
-    # print("\nThe Story title:\n" + contStory.title)
-    # print("\nThe Story date:\n" + contStory.date)
-    # print("\nThe Story author:\n" + contStory.author)
-    # print("\nThe Story body:\n" + contStory.body)
-    # print("\nThe Story nextUrl:\n" + contStory.nextUrl)
+    storyDoc = {
+        "url": contStory.url
+        "title": contStory.title,
+        "author": contStory.author
+        "date": contStory.date
+        "body": contStory.body
+        "links": contStory.links
+        "nextUrl": contStory.nextUrl
+        "dateFetched": contStory.dateFetched}
+    bulk.insert(storyDoc)
     print("STORY NUMBER: " + str((i + 2)))
     # input()
+try:
+    bulk.execute()
+except BulkWriteError as bwe:
+    pprint(bwe.details) 
+
