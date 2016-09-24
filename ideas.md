@@ -1,0 +1,7 @@
+- Pull text data from some source. 
+    - Social media
+    - Texts
+- Put text through Mood API to determine user's current mood.
+- Apply mood to some value-generating step.
+    - Generate music playlist.
+    - Adjust room lighting.
