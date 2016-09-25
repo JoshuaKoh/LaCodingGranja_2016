@@ -13,7 +13,7 @@ Template.body.onCreated(function bodyOnCreated() {
 
 Template.body.helpers({
   articles() {
-      return Articles.find().fetch();
+      return Articles.find({}, {fields: {title:1, dominant_emotion:1}, limit: 10}).fetch();
   },
   articlesCount() {
     return Meteor.call("articles.pullAll").count();
