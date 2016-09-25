@@ -9,7 +9,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import plotly.tools as tls
 from random import randint
-
+import re
 
 # plotlyKey = os.environ['PLOTLY_TOKEN']
 # tls.set_credentials_file(username='JoshuaKoh', api_key='plotlyKey')
@@ -29,9 +29,10 @@ i = 0
 #     data = json.load(data_file)
 for article in articles.find({"emotional_range": {'$gt': 0.25}}).sort([("emotional_range", pymongo.DESCENDING)]):
     # Format article date to get day number
-    # date = datetime.strptime(article["date"], '%b %d, %Y')
-    # day = date.day
-    day = randint(1,32)
+    fullDate = article["date"].replace(',', ' ')
+    print(fullDate)
+    day = int(re.match(r'\s\d{2}\s|^\d{2}\s|\s\d\s|^\d\s', fullDate).group().strip())
+    print(day)
     # Add day number to days, but don't if day + emotion combo is already in cache. Otherwise, cache day emotion combo.
     if ((day, article["dominant_emotion"]) in _cache):
         if(article["dominant_emotion"] == "anger"):

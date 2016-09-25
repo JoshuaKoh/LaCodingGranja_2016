@@ -3,4 +3,5 @@ client = MongoClient("mongodb://newsmood:hLQp9PBtdRnJGmKI9FegaJJPLI9T3Yl8vGHrwcX
 db = client['admin']
 articles = db.articles
 
+# articles.remove({});    
 # print(articles.count())

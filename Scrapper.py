@@ -76,7 +76,7 @@ def makeStoryBBC(url, topic):
         for p in pTags:
             if p is not None:
                 textList.append(p.get_text().strip())
-    body = ''.join(textList)
+    body = '\n\n'.join(textList)
     #print("Body: " + body)
     dateFetched = datetime.now()
     out = Story(url, title, date, "", body, "", dateFetched, topic)
@@ -215,7 +215,6 @@ def addFoxStorys():
         "author": myStory.author,
         "date": myStory.date,
         "body": myStory.body,
-        "links": myStory.links,
         "nextUrl": myStory.nextUrl,
         "dateFetched": myStory.dateFetched}
     bulk.insert(storyDoc)
@@ -225,13 +224,14 @@ def addFoxStorys():
     for i in range(1000000):
 
         contStory = getNextStory(contStory)
+        if (contStory is None):
+            break
         storyDoc = {
             "url": contStory.url,
             "title": contStory.title,
             "author": contStory.author,
             "date": contStory.date,
             "body": contStory.body,
-            "links": contStory.links,
             "nextUrl": contStory.nextUrl,
             "dateFetched": contStory.dateFetched}
         bulk.insert(storyDoc)
@@ -244,46 +244,52 @@ def addFoxStorys():
 
 def addWSJStories():
     bulk = articles.initialize_unordered_bulk_op()
+    urlList = ["http://www.wsj.com/xml/rss/3_7041.xml", "http://www.wsj.com/xml/rss/3_7085.xml", "http://www.wsj.com/xml/rss/3_7031.xml", "http://www.wsj.com/xml/rss/3_7455.xml", "http://www.wsj.com/xml/rss/3_7201.xml"]
+    for url in urlList:
+        tree = ET.ElementTree(file=urlopen(url))
+        root = tree.getroot()
+        for story in root.iter('item'):
+            storyURL = story.find('link').text
+            html = requests.get(storyURL).text
+            soup = BeautifulSoup(html, "lxml")
 
-    url = "http://www.wsj.com/xml/rss/3_7201.xml"
-    tree = ET.ElementTree(file=urlopen(url))
-    root = tree.getroot()
-    for story in root.iter('item'):
-        storyURL = story.find('link').text
-        html = requests.get(storyURL).text
-        soup = BeautifulSoup(html, "lxml")
+            # # elements = soup.findAll("h1", {"class": "wsj-article-headline"})
+            title = [''.join(s.findAll(text=True))for s in soup.findAll("h1", {"class": "wsj-article-headline"})]
+            dateList = [''.join(s.findAll(text=True))for s in soup.findAll("time", {"class": "timestamp"})]
+            date = ''.join(dateList)
+            date = date.replace('\n', '')
+            date = date.replace('Updated:', '')
+            date = date.replace('Updated', '')
+            date = date.strip()
+            print(date)
 
-        # # elements = soup.findAll("h1", {"class": "wsj-article-headline"})
-        title = [''.join(s.findAll(text=True))for s in soup.findAll("h1", {"class": "wsj-article-headline"})]
-        date = [''.join(s.findAll(text=True))for s in soup.findAll("time", {"class": "timestamp"})]
-
-        date = date[0][3:-4].strip()
-
-        # bodyList = [''.join(s.findAll(text=True))for s in soup.findAll("div", {"id": "wsj-article-wrap"})]
-        textList = []
-        div = soup.findAll('div', {'id': 'wsj-article-wrap'})
-        for tag in div:
-            pTag = tag.find_all("p")
-            for t in pTag:
-                if t is not None:
-                    textList.append(t.get_text().strip())
-        text = ''.join(textList)
-        if (text.strip()):
-            storyDoc = {
-                "url": storyURL,
-                "title": title[0],
-                "author": None,
-                "date": date,
-                "body": text,
-                "links": None,
-                "nextUrl": None,
-                "dateFetched": datetime.now()
-            }
-            bulk.insert(storyDoc)
+            # bodyList = [''.join(s.findAll(text=True))for s in soup.findAll("div", {"id": "wsj-article-wrap"})]
+            textList = []
+            div = soup.findAll('div', {'id': 'wsj-article-wrap'})
+            for tag in div:
+                pTag = tag.find_all("p")
+                for t in pTag:
+                    if t is not None:
+                        textList.append(t.get_text().strip())
+            text = '\n\n'.join(textList)
+            if (text.strip()):
+                storyDoc = {
+                    "url": storyURL,
+                    "title": title[0],
+                    "author": None,
+                    "date": date,
+                    "body": text,
+                    "links": None,
+                    "nextUrl": None,
+                    "dateFetched": datetime.now()
+                }
+                bulk.insert(storyDoc)
 
     try:
         bulk.execute()
     except BulkWriteError as bwe:
         pprint(bwe.details)
 
-
+# addWSJStories()
+# readRssBBC()
+addFoxStorys()
