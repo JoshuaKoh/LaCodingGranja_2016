@@ -2,13 +2,14 @@ import requests
 from bs4 import BeautifulSoup
 from dbco import *
 from datetime import datetime
+import feedparser
 
 
 class Story:
     'Common base class for all Stories'
     storyCount = 0
 
-    def __init__(self, url, title, date, author, body, nextUrl, dateFetched):
+    def __init__(self, url, title, date, author, body, nextUrl, dateFetched, topic):
         self.url = url
         self.title = title
         self.date = date
@@ -16,6 +17,7 @@ class Story:
         self.body = body
         self.nextUrl = nextUrl
         self.dateFetched = dateFetched
+        self.topic = topic
 
         Story.storyCount += 1
 
@@ -44,25 +46,71 @@ def makeStoryFoxMobile(url):
     if nextUrl is "":
         return
 
-    out = Story(url, title, date, author, body, nextUrl, dateFetched)
+    out = Story(url, title, date, author, body, nextUrl, dateFetched, "")
 
     return out
 
 
-def makeStoryCNN(url):
+def makeStoryCNN(url, topic):
     "turns a url into a story object"
 
     html = requests.get(url).text
     soup = BeautifulSoup(html, "lxml")
-    elements = soup.findAll("div", {"class": "element"})
-    # print("\n" + element.get_text() + "\n")
-    title = elements[0].get_text().strip()
-    author = elements[1].get_text().strip()
-    date = elements[2].get_text().strip()
-    body = elements[3].get_text().strip()
-    out = Story(url, title, date, author, body, "")
+    print("URL: " + url)
+    titleSearch = soup.find("h1", {"class": "pg-headline"})
+    if titleSearch is None:
+        titleSearch = soup.find("h1", {"class": "article-title"})
+    title = titleSearch.get_text().strip()
+    print("title: " + title)
+
+    authorSearch = soup.find("class", {"class": "metadata__byline__author"})
+    if authorSearch is None:
+        authorSearch = soup.find("class", {"class": "byline"})
+    author = titleSearch.get_text().strip()[3:].split(",")[0]
+
+    print("author: " + author)
+    dateSearch = soup.find("p", {"class": "update-time"})
+    if dateSearch is None:
+        dateSearch = soup.find("span", {"class": "cnnDateStamp"})
+        date = dateSearch.get_text().strip()
+    else:
+        date = dateSearch.get_text().strip()[8:]
+    print("author: " + date)
+
+    bodyList = soup.findAll(attrs={"class": "zn-body__paragraph"})
+    body = ""
+    for block in bodyList:
+        if body is not "":
+            body += "\n\n"
+
+        body += block.get_text()
+    print("body: " + body)
+    # input()
+
+    dateFetched = datetime.now()
+
+    out = Story(url, title, date, author, body, "", dateFetched, topic)
 
     return out
+
+
+def readRss(rssURL, topic):
+
+    d = feedparser.parse(rssURL)
+    print(d.entries[0].link)
+    for entry in d.entries:
+        cnnStory = makeStoryCNN(entry.link, "")
+        print(cnnStory.url)
+        print(cnnStory.title)
+        print(cnnStory.author)
+        print(cnnStory.date)
+        print(cnnStory.body)
+        print(cnnStory.nextUrl)
+        print(cnnStory.date)
+        # input()
+    # site = "http://www.cnn.com/2016/09/23/health/heroin-opioid-drug-overdose-deaths-visual-guide/index.html"
+
+    # cnnStory = makeStoryCNN(site, "")
 
 
 def getNextStory(story):
@@ -112,3 +160,7 @@ def addFoxStorys():
         bulk.execute()
     except BulkWriteError as bwe:
         pprint(bwe.details)
+
+
+# MAIN
+readRss('http://rss.cnn.com/rss/cnn_us.rss', "test")
