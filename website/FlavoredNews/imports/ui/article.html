@@ -3,8 +3,16 @@
   {{#if shouldShow}}
     <div class="card hoverable article-item">
       <div class="card-content {{dominant_emotion}}">
-        <span class="card-title">{{title}}</span>
-        <p><span class="label">Mood:</span> <span class="dominant">{{dominant_emotion}}</span></p>
+        <div class="row">
+            <div class="col s11">
+                <span class="card-title">{{title}}</span>
+            </div>
+            <div class="col s1">
+                <span class="dominant">{{dominant_emotion}}</span>
+            </div>
+        </div>
+
+        <span class="label">Mood:</span>
         {{#if hasEmotionalSentence}}
           <p class="block-with-text">{{emotional_sentence}}</p>
         {{/if}}
