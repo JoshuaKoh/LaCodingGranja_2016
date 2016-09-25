@@ -51,32 +51,74 @@ def makeStoryFoxMobile(url):
 
     return out
 
+def makeStoryBBC(url, topic):
+    "turn an url from science daily into a story object"
+    html = requests.get(url).text
+    soup = BeautifulSoup(html, "lxml")
+    #print("URL: " + url)
+    titleSearch = soup.find("h1", {"class": "story-body__h1"})
+    if titleSearch is None:
+        return None
+    title = titleSearch.get_text().strip()
+    #print("Title: " + title)
+    dateSearch = soup.find("div", {"class": "date date--v2"})
+    if dateSearch is None:
+        return None
+    if "hours" in dateSearch.get_text().strip():
+        date = datetime.now().strftime("%b %d, %Y")
+    else:
+        date = dateSearch.get_text().strip()
+    #print("Date: " + date)
+    bodySearch = soup.findAll("div", {"class": "story-body__inner"})
+    textList = []
+    for tag in bodySearch:
+        pTags = tag.find_all("p")
+        for p in pTags:
+            if p is not None:
+                textList.append(p.get_text().strip())
+    body = ''.join(textList)
+    #print("Body: " + body)
+    dateFetched = datetime.now()
+    out = Story(url, title, date, "", body, "", dateFetched, topic)
+
+    storyDoc = {
+        "url": url,
+        "title": title,
+        "author": "",
+        "date": date,
+        "body": body,
+        "links": "",
+        "nextUrl": "",
+        "dateFetched": dateFetched
+    }
+
+    return storyDoc
 
 def makeStoryCNN(url, topic):
     "turns a url into a story object"
 
     html = requests.get(url).text
     soup = BeautifulSoup(html, "lxml")
-    print("URL: " + url)
+    #print("URL: " + url)
     titleSearch = soup.find("h1", {"class": "pg-headline"})
     if titleSearch is None:
         titleSearch = soup.find("h1", {"class": "article-title"})
     title = titleSearch.get_text().strip()
-    print("title: " + title)
+    #print("title: " + title)
 
     authorSearch = soup.find("class", {"class": "metadata__byline__author"})
     if authorSearch is None:
         authorSearch = soup.find("class", {"class": "byline"})
     author = titleSearch.get_text().strip()[3:].split(",")[0]
 
-    print("author: " + author)
+    #print("author: " + author)
     dateSearch = soup.find("p", {"class": "update-time"})
     if dateSearch is None:
         dateSearch = soup.find("span", {"class": "cnnDateStamp"})
         date = dateSearch.get_text().strip()
     else:
         date = dateSearch.get_text().strip()[8:]
-    print("author: " + date)
+    #print("author: " + date)
 
     bodyList = soup.findAll(attrs={"class": "zn-body__paragraph"})
     body = ""
@@ -85,7 +127,7 @@ def makeStoryCNN(url, topic):
             body += "\n\n"
 
         body += block.get_text()
-    print("body: " + body)
+    #print("body: " + body)
     # input()
 
     dateFetched = datetime.now()
@@ -96,23 +138,61 @@ def makeStoryCNN(url, topic):
 
 
 def readRss(rssURL, topic):
-
+    bulk = articles.initialize_unordered_bulk_op()
+    counter = 1;
     d = feedparser.parse(rssURL)
     print(d.entries[0].link)
     for entry in d.entries:
-        cnnStory = makeStoryCNN(entry.link, "")
-        print(cnnStory.url)
-        print(cnnStory.title)
-        print(cnnStory.author)
-        print(cnnStory.date)
-        print(cnnStory.body)
-        print(cnnStory.nextUrl)
-        print(cnnStory.date)
+        cnnStory = makeStoryBBC(entry.link, topic)
+        if cnnStory is None:
+            continue
+        bulk.insert(cnnStory)
+        print(counter)
+        counter = counter + 1
+
+    try:
+        bulk.execute()
+    except BulkWriteError as bwe:
+        pprint(bwe.details)
+        # print(cnnStory.url)
+        # print(cnnStory.title)
+        # print(cnnStory.author)
+        # print(cnnStory.date)
+        # print(cnnStory.body)
+        # print(cnnStory.nextUrl)
+        # print(cnnStory.date)
         # input()
     # site = "http://www.cnn.com/2016/09/23/health/heroin-opioid-drug-overdose-deaths-visual-guide/index.html"
 
     # cnnStory = makeStoryCNN(site, "")
 
+def readRssBBC():
+    rssfeeds = {
+        "business" : "http://feeds.bbci.co.uk/news/business/rss.xml",
+        "health" :  "http://feeds.bbci.co.uk/news/health/rss.xml?edition=uk",
+        "uk" : "http://feeds.bbci.co.uk/news/uk/rss.xml?edition=uk",
+        "front_page" : "http://feeds.bbci.co.uk/news/rss.xml?edition=uk"
+    }
+
+    bulk = articles.initialize_unordered_bulk_op()
+
+    counter = 1
+
+    for key in rssfeeds.keys():
+        d = feedparser.parse(rssfeeds[key])
+        print(d.entries[0].link)
+        for entry in d.entries:
+            cnnStory = makeStoryBBC(entry.link, key)
+            if cnnStory is None:
+                continue
+            bulk.insert(cnnStory)
+            print(counter)
+            counter = counter + 1
+
+    try:
+        bulk.execute()
+    except BulkWriteError as bwe:
+        pprint(bwe.details)
 
 def getNextStory(story):
     "creates a story object of the next story"
@@ -206,6 +286,4 @@ def addWSJStories():
     except BulkWriteError as bwe:
         pprint(bwe.details)
 
-# MAIN
-addWSJStories()
-# readRss('http://rss.cnn.com/rss/cnn_us.rss', "test")
+
