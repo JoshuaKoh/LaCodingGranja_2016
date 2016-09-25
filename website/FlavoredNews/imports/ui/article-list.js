@@ -7,6 +7,7 @@ import { Articles } from '../api/articles.js';
 import './article.js';
 import './article-list.html';
 
+
 Template.articleList.onCreated(function bodyOnCreated() {
   this.state = new ReactiveDict();
   Session.set("filter_joy", true);

@@ -15,5 +15,8 @@ Template.article.helpers({
 });
 
 Template.article.events({
+  'click .article-item'(event){
+    window.location = "/article/"+this._id;
+  }
   
 });

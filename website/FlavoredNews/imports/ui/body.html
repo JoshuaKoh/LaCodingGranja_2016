@@ -1,44 +1,47 @@
-<body>
-    <nav>
-        <div class="nav-wrapper light-blue lighten-5">
-            <img src="/FlavoredNewsLogo.png" class="brand-logo"/>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a class="options" href="index.html">News</a></li>
-                <li><a class="options" href="graphs.html">Visualize</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    {{> articleList}}
-
-    <footer class="page-footer light-blue lighten-5">
-          <div class="container">
-            <div class="row">
-              <div class="col l6 s12">
-                <h5 class="blue-text text-darken-4">Footer Content</h5>
-                <p class="blue-text text-darken-4">You can use rows and columns here to organize your footer content.</p>
-              </div>
-              <div class="col l4 offset-l2 s12">
-                <h5 class="blue-text text-darken-4">Contributors</h5>
-                <ul>
-                  <li><a class="blue-text text-darken-4" href="#!">Andrew Oliveira</a></li>
-                  <li><a class="blue-text text-darken-4" href="#!">Bailey Anderson</a></li>
-                  <li><a class="blue-text text-darken-4" href="#!">David Israwi</a></li>
-                  <li><a class="blue-text text-darken-4" href="#!">Joshua Koh</a></li>
-                  <li><a class="blue-text text-darken-4" href="#!">Kenneth Mitchell</a></li>
-                  <li><a class="blue-text text-darken-4" href="#!">Sammy Israwi</a></li>
+<template name="mainLayout">
+    
+    <body>
+        <nav>
+            <div class="nav-wrapper light-blue lighten-5">
+                <img src="/FlavoredNewsLogo.png" class="brand-logo"/>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li><a class="options" href="index.html">News</a></li>
+                    <li><a class="options" href="graphs.html">Visualize</a></li>
                 </ul>
-              </div>
             </div>
-          </div>
-          <div class="footer-copyright">
-            <div class="container">
-            <a class="blue-text text-darken-4">© 2016 La Coding Granja</a>
-            </div>
-          </div>
-        </footer>
+        </nav>
 
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
-</body>
+        {{> Template.dynamic template=main}}
+
+        <footer class="page-footer light-blue lighten-5">
+            <div class="container">
+                <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="blue-text text-darken-4">Footer Content</h5>
+                    <p class="blue-text text-darken-4">You can use rows and columns here to organize your footer content.</p>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="blue-text text-darken-4">Contributors</h5>
+                    <ul>
+                    <li><a class="blue-text text-darken-4" href="#!">Andrew Oliveira</a></li>
+                    <li><a class="blue-text text-darken-4" href="#!">Bailey Anderson</a></li>
+                    <li><a class="blue-text text-darken-4" href="#!">David Israwi</a></li>
+                    <li><a class="blue-text text-darken-4" href="#!">Joshua Koh</a></li>
+                    <li><a class="blue-text text-darken-4" href="#!">Kenneth Mitchell</a></li>
+                    <li><a class="blue-text text-darken-4" href="#!">Sammy Israwi</a></li>
+                    </ul>
+                </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                <a class="blue-text text-darken-4">© 2016 La Coding Granja</a>
+                </div>
+            </div>
+            </footer>
+
+        <!--Import jQuery before materialize.js-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    </body>
+</template>
