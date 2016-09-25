@@ -1,6 +1,7 @@
 - Pymongo 3.4
 - bs4
 - numpy
+- feedbackparser-develop (sudo python3 setup.py install)
 - npm->mongoose
 - npm->express
 - npm->body-parser
