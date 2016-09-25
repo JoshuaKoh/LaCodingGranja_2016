@@ -10,7 +10,6 @@ if (Meteor.isServer) {
 
 Meteor.methods({
   'articles.pullAll'() {
-
       return Articles.find().fetch();
   }
 });

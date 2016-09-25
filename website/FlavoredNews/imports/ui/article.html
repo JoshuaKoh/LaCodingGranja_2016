@@ -1,7 +1,13 @@
 <template name="article">
-  <div class="card-panel blue lighten-4">
-      <span class="text"><strong>{{title}}</strong> mood: {{dominant_emotion}}</span>
-  </div>
 
+  <div class="card hoverable blue lighten-4">
+    <div class="card-content">
+      <span class="card-title">{{title}}</span>
+      <p><span class="label">Mood:</span> {{dominant_emotion}}</p>
+      {{#if hasEmotionalSentence}}
+        <p>{{emotional_sentence}}</p>
+      {{/if}}
+    </div>
+  </div>
 
 </template>
