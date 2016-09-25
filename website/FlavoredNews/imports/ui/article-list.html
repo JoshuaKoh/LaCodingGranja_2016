@@ -1,0 +1,50 @@
+<template name="articleList">
+    
+    <div class="container">
+    <header>
+        <h2>List of articles</h2>
+        <div class="row">
+            <div class="col s1">
+                <!-- This area is intentionally left blank -->
+            </div>
+            <div class="col s2">
+                <p>
+                    <input type="checkbox" class="filter-check test1" id="test1" checked />
+                    <label for="test1">Joy</label>
+                </p>
+            </div>
+            <div class="col s2">
+                <p>
+                    <input type="checkbox" class="filter-check test1" id="test2" checked />
+                    <label for="test2">Anger</label>
+                </p>
+            </div>
+            <div class="col s2">
+                <p>
+                    <input type="checkbox" class="filter-check test1" id="test3" checked />
+                    <label for="test3">Sadness</label>
+                </p>
+            </div>
+            <div class="col s2">
+                <p>
+                    <input type="checkbox" class="filter-check test1" id="test4" checked />
+                    <label for="test4">Disgust</label>
+                </p>
+            </div>
+            <div class="col s2">
+                <p>
+                    <input type="checkbox" class="filter-check test1" id="test5" checked />
+                    <label for="test5">Fear</label>
+                </p>
+            </div>
+        </div>
+
+    </header>
+
+
+      {{#each articles}}
+        {{> article}}
+      {{/each}}
+
+    </div>
+</template>

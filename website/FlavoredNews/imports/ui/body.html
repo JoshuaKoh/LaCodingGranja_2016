@@ -9,56 +9,7 @@
         </div>
     </nav>
 
-    <div class="container">
-    <header>
-        <h2>List of articles</h2>
-        <div class="row">
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test1" />
-                    <label for="test1">Joy</label>
-                </p>
-            </div>
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test2" />
-                    <label for="test2">Angry</label>
-                </p>
-            </div>
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test3" />
-                    <label for="test3">Sad</label>
-                </p>
-            </div>
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test4" />
-                    <label for="test4">Disgust</label>
-                </p>
-            </div>
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test5" />
-                    <label for="test5">Fear</label>
-                </p>
-            </div>
-            <div class="col s2">
-                <p>
-                    <input type="checkbox" id="test6" />
-                    <label for="test6">Emotional</label>
-                </p>
-            </div>
-        </div>
-
-    </header>
-
-
-      {{#each articles}}
-        {{> article}}
-      {{/each}}
-
-    </div>
+    {{> articleList}}
 
     <footer class="page-footer light-blue lighten-5">
           <div class="container">

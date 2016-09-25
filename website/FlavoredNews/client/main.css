@@ -50,3 +50,23 @@ nav .brand-logo {
 .dominant{
     font-weight: bold;
 }
+
+.joy {
+    background-color: rgb(255, 255, 153);
+}
+
+.anger {
+    background-color: rgb(255, 153, 204)
+}
+
+.disgust{
+    background-color: rgb(204, 153, 255);
+}
+
+.fear{
+    background-color: rgb(153, 255, 204);
+}
+
+.sadness{
+    background-color: rgb(153, 204, 255);
+}
