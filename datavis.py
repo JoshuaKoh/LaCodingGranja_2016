@@ -96,11 +96,11 @@ trace0 = go.Scatter(
 
 layout = go.Layout(
     xaxis=dict(
-        title='DAY IN SEPTEMBER',
+        title='SEPTEMBER 2016',
         titlefont=dict(
             family='Arial, sans-serif',
             size=18,
-            color='lightgrey'
+            color='grey'
         ),
         range=[0, 32]
     ),
@@ -109,9 +109,9 @@ layout = go.Layout(
         titlefont=dict(
             family='Arial, sans-serif',
             size=18,
-            color='lightgrey'
+            color='grey'
         ),
-        range=[0, 1.5]
+        range=[0, 1.2]
     )
 )
 

@@ -4,4 +4,4 @@ db = client['admin']
 articles = db.articles
 
 # articles.remove({});    
-# print(articles.count())
+print(articles.count())
