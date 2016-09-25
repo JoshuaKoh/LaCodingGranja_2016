@@ -42,3 +42,11 @@ nav .brand-logo {
         line-height: 30px;
     }
 }
+
+.label{
+    font-style: italic;
+}
+
+.dominant{
+    font-weight: bold;
+}
