@@ -1,5 +1,5 @@
 <template name="articleDetail">
-    
+
     {{#with article}}
         <div class="container">
             <h1>{{title}}</h1>
@@ -9,10 +9,17 @@
                 <br />
                 <div class="col s2 label">Source:</div> <div class="col s10">{{url}}</div>
 
-                
+                <div class="col s2">
+                    Moods
+                </div>
+
+                <div class="col s10">
+                    <div class="MoodGraph"></div>
+                </div>
+
 
             </div>
         </div>
     {{/with}}
-    
+
 </template>
