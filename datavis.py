@@ -8,6 +8,8 @@ import numpy
 import plotly.plotly as py
 import plotly.graph_objs as go
 import plotly.tools as tls
+from random import randint
+
 
 # plotlyKey = os.environ['PLOTLY_TOKEN']
 # tls.set_credentials_file(username='JoshuaKoh', api_key='plotlyKey')
@@ -23,14 +25,13 @@ avgValues = []
 _cache = {}
 i = 0
 
-with open('mocksJSON/analyzed_articles.json') as data_file:
-    data = json.load(data_file)
-# for article in articles.find({"emotions": {'$gt': 0.25}}).sort([
-#         ("emotions", pymongo.DESCENDING)]):
-for article in data:
+# with open('mocksJSON/analyzed_articles.json') as data_file:
+#     data = json.load(data_file)
+for article in articles.find({"emotional_range": {'$gt': 0.25}}).sort([("emotional_range", pymongo.DESCENDING)]):
     # Format article date to get day number
-    date = datetime.strptime(article["date"], '%b %d, %Y')
-    day = date.day
+    # date = datetime.strptime(article["date"], '%b %d, %Y')
+    # day = date.day
+    day = randint(1,32)
     # Add day number to days, but don't if day + emotion combo is already in cache. Otherwise, cache day emotion combo.
     if ((day, article["dominant_emotion"]) in _cache):
         if(article["dominant_emotion"] == "anger"):
@@ -71,8 +72,8 @@ for article in data:
         size.append(20.0)
 
         _cache[(day, article["dominant_emotion"])] = i
+        i = i + 1
 
-    i = i + 1
 
 
 trace0 = go.Scatter(
@@ -93,7 +94,7 @@ layout = go.Layout(
             size=18,
             color='lightgrey'
         ),
-        range=[1, 31]
+        range=[0, 32]
     ),
     yaxis=dict(
         title='EMOTIONAL INTENSITY',
@@ -102,7 +103,7 @@ layout = go.Layout(
             size=18,
             color='lightgrey'
         ),
-        range=[0, 1]
+        range=[0, 1.5]
     )
 )
 
