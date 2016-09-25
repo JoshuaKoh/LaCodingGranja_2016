@@ -207,5 +207,5 @@ def addWSJStories():
         pprint(bwe.details)
 
 # MAIN
-# addWSJStories()
+addWSJStories()
 # readRss('http://rss.cnn.com/rss/cnn_us.rss', "test")

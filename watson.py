@@ -7,10 +7,14 @@
 #   Extras: most emotional sentence, dominant emotion
 
 import json
+from dbco import *
 from watson_developer_cloud import ToneAnalyzerV3
 
-newsJSON = open('mocksJSON/articles.json', 'r')
-news = json.load(newsJSON)
+# newsJSON = open('mocksJSON/articles.json', 'r')
+# news = json.load(newsJSON)
+
+articleData = articles.find({"emotional_range": {'$exists': False}}).sort( [ ("date", 1) ])
+
 
 #print(news)
 
@@ -20,6 +24,7 @@ tone_analyzer = ToneAnalyzerV3(
    version='2016-05-19')
 
 class Article(object):
+    _id = ""
     url = "",
     title = "",
     date = "",
@@ -35,13 +40,18 @@ class Article(object):
 
 def classifyArticle(news):
     article = Article()
+    article._id = news['_id']
     article.url = news['url']
     article.title = news['title']
-    article.date = news['dateCreated']
+    article.date = news['dateFetched']
 
-    analyzed = tone_analyzer.tone(news['body'])
+    try:
+        analyzed = tone_analyzer.tone(news['body'])
+    except:
+        articles.delete_one({"_id": article._id})
+        return
 
-    #print(analyzed)
+    # print(analyzed)
 
     article.anger = analyzed['document_tone']['tone_categories'][0]['tones'][0]['score']
     article.disgust = analyzed['document_tone']['tone_categories'][0]['tones'][1]['score']
@@ -53,12 +63,18 @@ def classifyArticle(news):
 
     onEdge = 0  # Find most emotional sentence - stores highest emotional_range value
     # Checks the emotional range
-    for sentence in analyzed['sentences_tone']:
-        sentenceEmotional = sentence['tone_categories'][2]['tones'][4]['score']
-        if sentenceEmotional > onEdge:
-            onEdge = sentenceEmotional
-            article.emotional_sentence = "..." + sentence['text']
+    if analyzed.get('sentences_tone') is None:
+        articles.delete_one({"_id": article._id})
+        return
 
+    for sentence in analyzed['sentences_tone']:
+        if len(sentence['tone_categories']) >= 2:
+            sentenceEmotional = sentence['tone_categories'][2]['tones'][4]['score']
+            if sentenceEmotional > onEdge:
+                onEdge = sentenceEmotional
+                article.emotional_sentence = "..." + sentence['text']
+        else:
+            article.emotional_sentence = "No content found."
 
 
     highestEmo = max(article.anger, article.fear, article.disgust, article.joy, article.sadness)
@@ -73,15 +89,41 @@ def classifyArticle(news):
     if(highestEmo == article.sadness):
         article.dominant_emotion = "sadness"
 
-    return article
+    articleDoc = {
+        "emotional_sentence" : article.emotional_sentence,
+        "dominant_emotion" : article.dominant_emotion,
+        "anger": article.anger,
+        "disgust" : article.disgust,
+        "fear" : article.fear,
+        "joy" : article.joy,
+        "sadness" : article.sadness,
+        "openness" : article.openness,
+        "emotional_range" : article.emotional_range
+    }
+    return articleDoc
 
-analyzed_articles = list()
 
-for newsArticle in news['article']:
-    analyzed_articles.append(classifyArticle(newsArticle))
+# analyzed_articles = []
+# for newsArticle in news['article']:
+#     analyzed_articles.append(classifyArticle(newsArticle))
+# bulk = articles.initialize_unordered_bulk_op()
 
-with open('mocksJSON/analyzed_articles.json', 'w') as outfile:
-    json.dump(analyzed_articles, outfile, default=lambda o: o.__dict__, indent=2)
+i = 0
+for newsArticle in articleData:
+    print(articleData.count())
+    if (newsArticle["body"].count(' ') > 3):
+        print("article %i" % i)
+        newArticle = classifyArticle(newsArticle)
+        if newArticle is not None:
+            articles.update({'_id': newsArticle['_id']},{'$set': newArticle}, upsert=True, multi=False)
+    i +=1
+
+# try:
+#     bulk.execute()
+# except BulkWriteError as bwe:
+#     pprint(bwe.details)
+# with open('mocksJSON/analyzed_articles.json', 'w') as outfile:
+#     json.dump(analyzed_articles, outfile, default=lambda o: o.__dict__, indent=2)
 
 # For example output, print this
 # print(json.dumps(tone_analyzer.tone(text='I am really excited because David is here and he is my best friend and I love him so much! Yay!'), indent=2))
