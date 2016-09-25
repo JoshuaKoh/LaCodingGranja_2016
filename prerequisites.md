@@ -1,5 +1,6 @@
 - Pymongo 3.4
 - bs4
+- numpy
 - npm->mongoose
 - npm->express
 - npm->body-parser

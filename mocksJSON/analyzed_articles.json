@@ -1,0 +1,41 @@
+[
+  {
+    "joy": 0.03675,
+    "date": "Sep 24, 2016",
+    "emotional_sentence": "...But authorities were still searching Cascade Mall in Burlington for evidence a little more than 12 hours after Friday night's rampage, and they had not identified the attacker or his victims Saturday.",
+    "sadness": 0.202188,
+    "url": "http://www.cnn.com/2016/09/24/us/washington-mall-shooting/index.html",
+    "anger": 0.161104,
+    "dominant_emotion": "anger",
+    "disgust": 0.417327,
+    "fear": 0.718675,
+    "emotional_range": 0.352,
+    "title": "Washington mall shooting: Manhunt underway after gunman kills 5"
+  },
+  {
+    "joy": 0.045918,
+    "date": "Sep 24, 2016",
+    "emotional_sentence": "...But on Thursday, those fears subsided.",
+    "sadness": 0.353893,
+    "url": "http://www.cnn.com/2016/09/24/health/canada-elderly-couple-reunited/index.html",
+    "anger": 0.093186,
+    "dominant_emotion": "fear",
+    "disgust": 0.096484,
+    "fear": 0.489782,
+    "emotional_range": 0.503,
+    "title": "Reunited at last: Elderly couple who broke hearts moved to same home"
+  },
+  {
+    "joy": 0.045918,
+    "date": "Sep 24, 2016",
+    "emotional_sentence": "...But on Friday, those fears subsided.",
+    "sadness": 0.353893,
+    "url": "http://www.cnn.com/2016/09/24/health/canada-elderly-couple-reunited/index.html",
+    "anger": 0.093186,
+    "dominant_emotion": "fear",
+    "disgust": 0.096484,
+    "fear": 0.999,
+    "emotional_range": 0.503,
+    "title": "Reunited at first: Elderly couple who broke hearts moved to same home"
+  }
+]
