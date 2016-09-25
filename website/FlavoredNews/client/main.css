@@ -60,6 +60,11 @@ nav .brand-logo {
     }
 }
 
+.git {
+    height: 5%;
+    width: 5%;
+}
+
 .label{
     font-style: italic;
 }
