@@ -1,5 +1,44 @@
 /* CSS declarations go here */
 .brand-logo {
-    height: 150%;
-    width: 50%;
+    height: 100%;
+    width: 30%;
+    margin-left: 30px;
+}
+
+#nav-mobile {
+    padding-top: 75px;
+    margin-right: 40px;
+    height: 200px;
+}
+
+.options {
+    color: rgb(27, 107, 182);
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+nav {
+    height: 300px;
+    line-height: 300px;
+}
+
+nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons {
+    height: 30px;
+    line-height: 30px;
+}
+
+nav .button-collapse i {
+    height: 30px;
+    line-height: 30px;
+}
+
+nav .brand-logo {
+    font-size: 1.6rem;
+}
+
+@media only screen and (min-width: 601px){
+    nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+        height: 200px !important;
+        line-height: 30px;
+    }
 }
