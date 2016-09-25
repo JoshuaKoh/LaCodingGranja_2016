@@ -13,6 +13,9 @@ Template.articleDetail.onCreated(function(){
 
 Template.articleDetail.helpers({
     article(){
-        return Articles.findOne(FlowRouter.getParam("_id"));
+        var _myid = FlowRouter.getParam("_id");
+        var item = Articles.findOne(new Mongo.ObjectID(_myid));
+        console.log(item);
+        return item;
     }
 });

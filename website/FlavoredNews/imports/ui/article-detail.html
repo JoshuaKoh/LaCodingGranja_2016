@@ -1,7 +1,18 @@
 <template name="articleDetail">
     
     {{#with article}}
-        {{title}}
+        <div class="container">
+            <h1>{{title}}</h1>
+            <div class="row">
+                <div class="col s8 label"><h4>"{{emotional_sentence}}"</h4></div> <div class="col s4">{{dominant_emotion}}</div>
+                <div class="col s12">{{body}}</div>
+                <br />
+                <div class="col s2 label">Source:</div> <div class="col s10">{{url}}</div>
+
+                
+
+            </div>
+        </div>
     {{/with}}
     
 </template>
