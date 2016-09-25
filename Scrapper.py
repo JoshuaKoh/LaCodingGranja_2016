@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 from dbco import *
 from datetime import datetime
 import feedparser
-
+import xml.etree.cElementTree as ET
+from urllib.request import urlopen
 
 class Story:
     'Common base class for all Stories'
@@ -161,6 +162,50 @@ def addFoxStorys():
     except BulkWriteError as bwe:
         pprint(bwe.details)
 
+def addWSJStories():
+    bulk = articles.initialize_unordered_bulk_op()
+
+    url = "http://www.wsj.com/xml/rss/3_7201.xml"
+    tree = ET.ElementTree(file=urlopen(url))
+    root = tree.getroot()
+    for story in root.iter('item'):
+        storyURL = story.find('link').text
+        html = requests.get(storyURL).text
+        soup = BeautifulSoup(html, "lxml")
+
+        # # elements = soup.findAll("h1", {"class": "wsj-article-headline"})
+        title = [''.join(s.findAll(text=True))for s in soup.findAll("h1", {"class": "wsj-article-headline"})]
+        date = [''.join(s.findAll(text=True))for s in soup.findAll("time", {"class": "timestamp"})]
+
+        date = date[0][3:-4].strip()
+
+        # bodyList = [''.join(s.findAll(text=True))for s in soup.findAll("div", {"id": "wsj-article-wrap"})]
+        textList = []
+        div = soup.findAll('div', {'id': 'wsj-article-wrap'})
+        for tag in div:
+            pTag = tag.find_all("p")
+            for t in pTag:
+                if t is not None:
+                    textList.append(t.get_text().strip())
+        text = ''.join(textList)
+        if (text.strip()):
+            storyDoc = {
+                "url": storyURL,
+                "title": title[0],
+                "author": None,
+                "date": date,
+                "body": text,
+                "links": None,
+                "nextUrl": None,
+                "dateFetched": datetime.now()
+            }
+            bulk.insert(storyDoc)
+
+    try:
+        bulk.execute()
+    except BulkWriteError as bwe:
+        pprint(bwe.details)
 
 # MAIN
-readRss('http://rss.cnn.com/rss/cnn_us.rss', "test")
+# addWSJStories()
+# readRss('http://rss.cnn.com/rss/cnn_us.rss', "test")
