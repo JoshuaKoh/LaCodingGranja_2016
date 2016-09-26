@@ -9,7 +9,7 @@ import plotly.plotly as py
 import plotly.graph_objs as go
 import plotly.tools as tls
 from random import randint
-
+import re
 
 # plotlyKey = os.environ['PLOTLY_TOKEN']
 # tls.set_credentials_file(username='JoshuaKoh', api_key='plotlyKey')
@@ -27,11 +27,19 @@ i = 0
 
 # with open('mocksJSON/analyzed_articles.json') as data_file:
 #     data = json.load(data_file)
-for article in articles.find({"emotional_range": {'$gt': 0.25}}).sort([("emotional_range", pymongo.DESCENDING)]):
+for article in articles.find():
     # Format article date to get day number
-    # date = datetime.strptime(article["date"], '%b %d, %Y')
-    # day = date.day
-    day = randint(1,32)
+    fullDate = str(article["date"].replace(',', ''))
+    p = re.compile(r'\s(\d{2})\s|^\d{2}\s|\s(\d)\s|^\d\s', re.IGNORECASE)
+    matches = re.match(p, fullDate)
+    if matches is None:
+        s = fullDate.find(' ')
+        e = fullDate[s+1:].find(' ') + s+1
+    else:
+        s = matches.start()
+        e = matches.end()
+
+    day = int(fullDate[s:e].strip())
     # Add day number to days, but don't if day + emotion combo is already in cache. Otherwise, cache day emotion combo.
     if ((day, article["dominant_emotion"]) in _cache):
         if(article["dominant_emotion"] == "anger"):
@@ -44,7 +52,7 @@ for article in articles.find({"emotional_range": {'$gt': 0.25}}).sort([("emotion
             avgValues[_cache[(day, article["dominant_emotion"])]].append(article["joy"])
         elif(article["dominant_emotion"] == "sadness"):
             avgValues[_cache[(day, article["dominant_emotion"])]].append(article["sadness"])
-        size[_cache[(day, article["dominant_emotion"])]] = size[_cache[(day, article["dominant_emotion"])]] + 5.0
+        size[_cache[(day, article["dominant_emotion"])]] = size[_cache[(day, article["dominant_emotion"])]] + 2.0
         emotionsY[_cache[(day, article["dominant_emotion"])]] = numpy.mean(avgValues[_cache[(day, article["dominant_emotion"])]])
     else:
         daysX.append(day)
@@ -88,11 +96,11 @@ trace0 = go.Scatter(
 
 layout = go.Layout(
     xaxis=dict(
-        title='DAY IN SEPTEMBER',
+        title='SEPTEMBER 2016',
         titlefont=dict(
             family='Arial, sans-serif',
             size=18,
-            color='lightgrey'
+            color='grey'
         ),
         range=[0, 32]
     ),
@@ -101,9 +109,9 @@ layout = go.Layout(
         titlefont=dict(
             family='Arial, sans-serif',
             size=18,
-            color='lightgrey'
+            color='grey'
         ),
-        range=[0, 1.5]
+        range=[0, 1.2]
     )
 )
 
