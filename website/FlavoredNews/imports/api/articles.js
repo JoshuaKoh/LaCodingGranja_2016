@@ -3,12 +3,9 @@ import { Mongo } from 'meteor/mongo';
 
 export const Articles = new Mongo.Collection('articles');
 
-console.log("One item from articles:");
-console.log(Articles);
-console.log("Done");
-
 Meteor.methods({
-  'articles.pullAll'() {
-      return Articles.find().fetch();
+  'articles.pullList'() {
+
+      return Articles.find({}, {fields: {title:1, dominant_emotion:1, emotional_sentence:1, url:1}}).fetch();
   }
 });
