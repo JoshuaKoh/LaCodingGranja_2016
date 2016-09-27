@@ -3,7 +3,7 @@ var express = require("express");
 var bodyParser = require('body-parser');
 var NewsMood = require("./models/NewsArticle");
 
-//connect to MongoDB 
+//connect to MongoDB
 // Insert Super Secret Connection String here
 mongoose.connect("mongodb://newsmood:hLQp9PBtdRnJGmKI9FegaJJPLI9T3Yl8vGHrwcXzYLt41dUXYZTzsoA27NrH001CxZbgA0Aqjbio4liIVxKkIA==@newsmood.documents.azure.com:10250/?ssl=true");
 
@@ -27,9 +27,9 @@ app.post('/insertNewsArticle', function(req, res){
     });
 
     newArticle.save(function(err){
-        if(err) 
+        if(err)
             res.json({message: "insert failed", error: err});
-        else 
+        else
             res.json({message: "insert successful"});
     })
 });
