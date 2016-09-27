@@ -13,3 +13,7 @@ Template.body.helpers({
 Template.body.events({
 
 });
+
+Template.body.onCreated(function(){
+    Meteor.subscribe("articles");
+})

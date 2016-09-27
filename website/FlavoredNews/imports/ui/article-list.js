@@ -19,7 +19,7 @@ Template.articleList.onCreated(function bodyOnCreated() {
 
 Template.articleList.helpers({
   articles() {
-      return Meteor.call('articles.pullList');
+      return Articles.find({}, {fields: {title:1, dominant_emotion:1, emotional_sentence:1, url:1}}).fetch();
   }
 });
 
