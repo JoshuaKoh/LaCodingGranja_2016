@@ -11,7 +11,7 @@ module.exports = {
 
   meteor: {
     name: 'Flavored News',
-    path: '../app',
+    path: '../../FlavoredNews',
     servers: {
       one: {}
     },
@@ -19,9 +19,12 @@ module.exports = {
       serverOnly: false,
     },
     env: {
-      ROOT_URL: 'app.com',
-      MONGO_URL: 'mongodb://localhost/meteor'
+      ROOT_URL: 'flavorednews.com',
+      MONGO_URL: 'mongodb://newsmood:hLQp9PBtdRnJGmKI9FegaJJPLI9T3Yl8vGHrwcXzYLt41dUXYZTzsoA27NrH001CxZbgA0Aqjbio4liIVxKkIA==@newsmood.documents.azure.com:10250/?ssl=true'
     },
+    docker: {
+      image:'abernix/meteord:base'
+    }
 
     //dockerImage: 'kadirahq/meteord'
     deployCheckWaitTime: 60
