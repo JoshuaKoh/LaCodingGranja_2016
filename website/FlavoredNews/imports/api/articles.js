@@ -1,12 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
 
 export const Articles = new Mongo.Collection('articles');
 
-if (Meteor.isServer) {
-  console.log("I am in the server!");
-}
+console.log("One item from articles:");
+console.log(Articles);
+console.log("Done");
 
 Meteor.methods({
   'articles.pullAll'() {
