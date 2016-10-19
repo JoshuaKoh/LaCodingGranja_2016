@@ -1,7 +1,12 @@
 from pymongo import MongoClient
-client = MongoClient("mongodb://newsmood:hLQp9PBtdRnJGmKI9FegaJJPLI9T3Yl8vGHrwcXzYLt41dUXYZTzsoA27NrH001CxZbgA0Aqjbio4liIVxKkIA==@newsmood.documents.azure.com:10250/?ssl=true")
-db = client['admin']
+from credentials import database
+
+client = MongoClient(database)
+
+db = client.flavorednews
+
+print(db.system.users.find({}))
 articles = db.articles
 
-# articles.remove({});    
+# articles.remove({});
 print(articles.count())
